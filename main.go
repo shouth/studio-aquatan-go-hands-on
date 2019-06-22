@@ -8,6 +8,9 @@ import (
 	"os"
 	"text/template"
 	"time"
+
+	"github.com/rakyll/statik/fs"
+	_ "github.com/shouth/studio-aquatan-golang-hands-on/statik"
 )
 
 var flagVersion bool
@@ -27,7 +30,7 @@ func main() {
 		log.Fatal(err)
 	}
 	if flagVersion {
-		fmt.Println("golang hands on 0.0.1")
+		fmt.Println("golang hands-on 0.0.1")
 	}
 
 	addCmd := flag.NewFlagSet("add", flag.ContinueOnError)
@@ -45,7 +48,9 @@ func main() {
 }
 
 func handleAddCmd(filename string) error {
-	btpl, _ := ioutil.ReadFile("./templates/report.md.tmpl")
+	statikFs, _ := fs.New()
+	tplFile, _ := statikFs.Open("/report.md.tmpl")
+	btpl, _ := ioutil.ReadAll(tplFile)
 	stpl := string(btpl)
 
 	tpl := template.Must(template.New("report").Parse(stpl))
